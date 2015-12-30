@@ -38,6 +38,8 @@
 //    BUILD_NODE
 //    CLEAN
 //    FREEBSD_SRC_URL
+//    VIEW_SVN
+//    EMAIL_TO
 //    MAKE_CONF_FILE
 //    SCRIPT_URL
 //    TEST_NODE
@@ -46,11 +48,24 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
 
-String src_url = FREEBSD_SRC_URL ?: 'svn://svn.freebsd.org/base/head'
-String script_url = SCRIPT_URL ?: 'https://github.com/freebsd/freebsd-ci.git'
+String src_url = 'svn://svnmir.freebsd.org/base/head'
+String script_url = 'https://github.com/freebsd/freebsd-ci.git'
 String make_conf_file = MAKE_CONF_FILE
 String workspace
 String json_str
+String email_to
+
+if (getBinding().hasVariable("FREEBSD_SRC_URL")) {
+    src_url = FREEBSD_SRC_URL
+}
+
+if (getBinding().hasVariable("SCRIPT_URL")) {
+    script_url = SCRIPT_URL
+}
+
+if (getBinding().hasVariable("EMAIL_TO")) {
+    email_to = EMAIL_TO
+}
 
 /*
  * Allocate a node to perform build steps on.
@@ -64,6 +79,11 @@ try {
     String script_root = "${workspace}/freebsd-ci"
     String build_script = "${script_root}/scripts/build/build1.sh"
     String build_ufs_script = "${script_root}/scripts/build/build-ufs-image.sh"
+    String view_svn = "http://svnweb.freebsd.org/base/"
+
+    if (getBinding().hasVariable("VIEW_SVN")) {
+        view_svn = VIEW_SVN
+    }
 
     String makeobjdirprefix = "${workspace}/obj"
 
@@ -83,6 +103,24 @@ try {
         stage 'Checkout src'
         // Check out the source tree
         svn "${src_url}"
+        checkout([$class: 'SubversionSCM',
+                  additionalCredentials: [],
+                  browser: [$class: 'ViewSVN', url: "${view_svn}"],
+                  excludedCommitMessages: '',
+                  excludedRegions: '',
+                  excludedRevprop: '',
+                  excludedUsers: '',
+                  filterChangelog: false,
+                  ignoreDirPropChanges: false,
+                  includedRegions: '',
+                  locations: [[credentialsId: '',
+                               depthOption: 'infinity',
+                               ignoreExternalsOption: false,
+                               local: '.',
+                               remote: "${src_url}"]],
+                               workspaceUpdater: [$class: 'UpdateUpdater']
+                              ])
+
 
         stage 'Build'
         withEnv(["WORKSPACE=${workspace}",
@@ -132,7 +170,7 @@ try {
         // Send e-mail notifications for failed or unstable builds
         step([$class: 'Mailer',
            notifyEveryUnstableBuild: true,
-           recipients: 'jenkins-admin@freebsd.org',
+           recipients: "${email_to}",
            sendToIndividuals: true])
 
 }
@@ -176,7 +214,7 @@ try {
         // Send e-mail notifications for failed or unstable builds
         step([$class: 'Mailer',
            notifyEveryUnstableBuild: true,
-           recipients: 'jenkins-admin@freebsd.org',
+           recipients: "${email_to}",
            sendToIndividuals: true])
 }
 }
