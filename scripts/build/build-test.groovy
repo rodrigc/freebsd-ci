@@ -80,10 +80,10 @@ try {
     String script_root = "${workspace}/freebsd-ci"
     String build_script = "${script_root}/scripts/build/build1.sh"
     String build_ufs_script = "${script_root}/scripts/build/build-ufs-image.sh"
-    java.net.URL view_svn = "http://svnweb.freebsd.org/base/"
+    java.net.URL view_svn = new java.net.URL("http://svnweb.freebsd.org/base/")
 
     if (getBinding().hasVariable("VIEW_SVN")) {
-        view_svn = VIEW_SVN
+        view_svn = VIEW_SVN.toURL()
     }
 
     String makeobjdirprefix = "${workspace}/obj"
