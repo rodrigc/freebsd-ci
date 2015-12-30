@@ -47,6 +47,7 @@
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
+import java.net.URL
 
 String src_url = 'svn://svnmir.freebsd.org/base/head'
 String script_url = 'https://github.com/freebsd/freebsd-ci.git'
@@ -79,7 +80,7 @@ try {
     String script_root = "${workspace}/freebsd-ci"
     String build_script = "${script_root}/scripts/build/build1.sh"
     String build_ufs_script = "${script_root}/scripts/build/build-ufs-image.sh"
-    String view_svn = "http://svnweb.freebsd.org/base/"
+    java.net.URL view_svn = "http://svnweb.freebsd.org/base/"
 
     if (getBinding().hasVariable("VIEW_SVN")) {
         view_svn = VIEW_SVN
