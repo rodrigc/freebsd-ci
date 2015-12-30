@@ -106,7 +106,7 @@ try {
         svn "${src_url}"
         checkout([$class: 'SubversionSCM',
                   additionalCredentials: [],
-                  browser: [$class: 'ViewSVN', url: "${view_svn}"],
+                  browser: [$class: 'ViewSVN', url: view_svn],
                   excludedCommitMessages: '',
                   excludedRegions: '',
                   excludedRevprop: '',
