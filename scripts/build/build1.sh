@@ -54,7 +54,8 @@ cat ${WORKSPACE}/make.conf
 set +x
 echo "--------------------------------------------------------------"
 set -x
-
+pwd
+ls
 make -d x -j 4 buildworld __MAKE_CONF=${WORKSPACE}/make.conf
 make -d x -j 4 buildkernel __MAKE_CONF=${WORKSPACE}/make.conf
 
