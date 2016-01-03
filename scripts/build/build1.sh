@@ -56,6 +56,7 @@ echo "--------------------------------------------------------------"
 set -x
 pwd
 ls
+env
 make -d xl buildworld __MAKE_CONF=${WORKSPACE}/make.conf
 make -d xl buildkernel __MAKE_CONF=${WORKSPACE}/make.conf
 
