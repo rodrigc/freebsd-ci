@@ -56,6 +56,6 @@ echo "--------------------------------------------------------------"
 set -x
 pwd
 ls
-make -d xl -j 4 buildworld __MAKE_CONF=${WORKSPACE}/make.conf
-make -d xl -j 4 buildkernel __MAKE_CONF=${WORKSPACE}/make.conf
+make -d xl buildworld __MAKE_CONF=${WORKSPACE}/make.conf
+make -d xl buildkernel __MAKE_CONF=${WORKSPACE}/make.conf
 
